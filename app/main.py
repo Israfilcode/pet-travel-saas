@@ -25,3 +25,15 @@ def root():
 @app.get("/health")
 def health():
     return {"status": "ok"}
+
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
+
+static_dir = os.path.join(os.path.dirname(__file__), "..", "static")
+os.makedirs(static_dir, exist_ok=True)
+app.mount("/static", StaticFiles(directory=static_dir), name="static")
+
+@app.get("/app", response_class=FileResponse)
+def serve_frontend():
+    return os.path.join(static_dir, "index.html")
